@@ -1,0 +1,32 @@
+name: User Management Workflow
+
+on:
+  push:
+    branches:
+      - master  # Change from main to master
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  manage_users:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Create a New User
+        run: |
+          curl --location 'https://thinking-tester-contact-list.herokuapp.com/users' \
+          --header 'Authorization: Bearer ${{ secrets.AUTH_TOKEN }}' \
+          --header 'Content-Type: application/json' \
+          --data-raw '{
+              "firstName": "Test",
+              "lastName": "User",
+              "email": "test@fake.com",
+              "password": "myPassword"
+          }'
+
+      - name: Get All Users
+        run: |
+          curl --location 'https://thinking-tester-contact-list.herokuapp.com/users' \
+          --header 'Authorization: Bearer ${{ secrets.AUTH_TOKEN }}' \
+          --header 'Content-Type: application/json'
